@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const [merchantList, setMerchantList] = useState([]);
+  const [filteredMerchantList, setFilteredMerchantList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
   const itemsPerPage = 10;
 
   useEffect(() => {
@@ -11,24 +13,46 @@ const HomePage = () => {
       try {
         let dataOfMerchant = await fetch("http://localhost:3000/merchantName");
         let response = await dataOfMerchant.json();
-        setMerchantList(response);
+        let lastMerchantList = await response.reverse();
+        setMerchantList(lastMerchantList);
+        setFilteredMerchantList(lastMerchantList);
       } catch (e) {
-        console.log(e);
+        console.log("Error while fetching Merchant Name from frontEND");
       }
     };
 
     fetchListOfMerchant();
-  }, [merchantList]);
+  }, []);
 
-  const totalPages = Math.ceil(merchantList.length / itemsPerPage);
+  useEffect(() => {
+    const filteredList = merchantList.filter((merchant) =>
+      merchant[0].toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredMerchantList(filteredList);
+    setCurrentPage(1);
+  }, [merchantList, searchQuery]);
+
+  const totalPages = Math.ceil(filteredMerchantList.length / itemsPerPage);
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  const currentItems = merchantList.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredMerchantList.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   return (
     <div className="App">
+      <div className="search-container">
+        <input
+          type="text"
+          className="search-input"
+          placeholder="Search Merchant..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
       <table>
         <thead>
           <tr>

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const PdfCreator = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const merchantName = searchParams.get("merchantName");
   const [merchantData, setMerchantData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,7 +25,9 @@ const PdfCreator = () => {
         const data = await response.json();
         setMerchantData(data);
       } catch (error) {
-        console.error("Error fetching merchant data:", error);
+        console.error("Error fetching merchant data from FrontEnd");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -35,7 +39,7 @@ const PdfCreator = () => {
   };
 
   const renderMerchantData = () => {
-    if (!merchantData) return null;
+    if (!merchantData) return;
 
     return Object.entries(merchantData).map(([key, value]) => (
       <div key={key} className="merchant-data-item">
@@ -48,16 +52,25 @@ const PdfCreator = () => {
 
   return (
     <div className="pdf-creator-container">
-      <h1 className="heading">
-        {merchantName
-          ? "BRD For Merchant : " + merchantName
-          : "No Merchant Name Found"}{" "}
-        <button className="action-button" onClick={handlePrintPDF}>
-          Print PDF
-        </button>
-      </h1>
+      <Link to={`/`}>
+        <button className="action-button">HomePage</button>
+      </Link>
+      {!merchantData ? (
+        <div className="loader"></div>
+      ) : (
+        <>
+          <h1 className="heading">
+            {merchantName
+              ? "BRD For Merchant : " + merchantName
+              : "No Merchant Name Found"}{" "}
+            <button className="action-button" onClick={handlePrintPDF}>
+              Print PDF
+            </button>
+          </h1>
 
-      <div className="merchant-data-container">{renderMerchantData()}</div>
+          <div className="merchant-data-container">{renderMerchantData()}</div>
+        </>
+      )}
     </div>
   );
 };

@@ -19,7 +19,7 @@ async function authenticateSheet(sheetRange) {
 
     return getRows?.data?.values;
   } catch (e) {
-    console.log(e);
+    console.log("Problem while authentication");
   }
 }
 
@@ -30,7 +30,7 @@ async function fetchHeaderFromSheet() {
     const headerRow = dataFromSheet[0];
     return headerRow;
   } catch (e) {
-    console.error("Error fetching data:", e);
+    console.error("Problem While Fetching Header");
   }
 }
 
@@ -40,13 +40,18 @@ async function fetchMerchantName() {
     const merchantName = await authenticateSheet("Form responses 1!AK2:AK");
     return merchantName;
   } catch (e) {
-    console.log(e);
+    console.error("Problem While Fetching Merchant");
   }
 }
 
 //Data For Particular Merchant
 async function getMerchantDataFromInput(merchantName) {
   try {
+    const sanitizedMerchantName = merchantName
+      .replace(/[.-]/g, "")
+      .trim()
+      .toLowerCase();
+
     const dataFromSheet = await authenticateSheet("Form responses 1!A:AR");
     const headerRow = dataFromSheet[0];
     const columnAKIndex = headerRow.findIndex(
@@ -56,11 +61,14 @@ async function getMerchantDataFromInput(merchantName) {
       throw new Error("Column AK not found in the header row.");
     }
     const matchingRows = dataFromSheet.filter(
-      (row) => row[columnAKIndex] === merchantName
+      (row) =>
+        row[columnAKIndex].replace(/[.-]/g, "").trim().toLowerCase() ===
+        sanitizedMerchantName
     );
+
     return matchingRows;
   } catch (e) {
-    return e;
+    console.log("Problem While Fetching Merchant Data");
   }
 }
 

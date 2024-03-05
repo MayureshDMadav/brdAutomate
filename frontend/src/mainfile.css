@@ -101,9 +101,9 @@ th {
 
 .value {
   color: #666;
-  margin-left: auto;
+  margin-left: 10px;
   width: 50%;
-  text-align: right;
+  text-align: left;
 }
 
 td.button_area {
@@ -111,11 +111,47 @@ td.button_area {
   justify-content: end;
 }
 
-@keyframes App-logo-spin {
-  from {
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 5rem;
+  margin-bottom: -6rem;
+}
+
+.search-input {
+  width: 50%;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #333;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+}
+
+@keyframes spin {
+  0% {
     transform: rotate(0deg);
   }
-  to {
+  100% {
     transform: rotate(360deg);
   }
 }

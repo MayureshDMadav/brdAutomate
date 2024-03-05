@@ -18,7 +18,7 @@ app.get("/merchantName", async (req, res) => {
     res.send(merchantName);
   } catch (e) {
     res.send(500, "Internal Server Error");
-    console.log(e);
+    console.log("Error while fetching Merchant Name");
   }
 });
 
@@ -27,7 +27,7 @@ app.post("/getDataForMerchant", async (req, res) => {
     let merchantName = req?.body.name.trim();
     let merchantData = await getMerchantDataFromInput(merchantName);
     let headerForData = await fetchHeaderFromSheet();
-
+    console.log(merchantData, "-------");
     const resultObject = {};
 
     for (let i = 0; i < headerForData.length; i++) {
@@ -36,8 +36,8 @@ app.post("/getDataForMerchant", async (req, res) => {
 
     res.send(resultObject);
   } catch (e) {
-    res.send(500, "Internal Server Error");
-    console.log(e);
+    res.status(500).send("Internal Server Error");
+    console.log("Error while Fetching Merchant Data");
   }
 });
 
