@@ -7,7 +7,6 @@ const express = require("express");
 const path = require("path");
 require("dotenv").config();
 const cors = require("cors");
-
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -27,7 +26,6 @@ app.post("/getDataForMerchant", async (req, res) => {
     let merchantName = req?.body.name.trim();
     let merchantData = await getMerchantDataFromInput(merchantName);
     let headerForData = await fetchHeaderFromSheet();
-    console.log(merchantData, "-------");
     const resultObject = {};
 
     for (let i = 0; i < headerForData.length; i++) {
