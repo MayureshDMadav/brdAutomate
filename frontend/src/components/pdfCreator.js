@@ -88,15 +88,6 @@ const PdfCreator = () => {
         <div className="loader"></div>
       ) : (
         <>
-          <h1 className="heading">
-            {merchantName
-              ? "BRD For Merchant : " + merchantName
-              : "No Merchant Name Found"}{" "}
-            <button className="action-button" onClick={handleSaveOrPrint}>
-              {changesMade ? "Save" : "Print PDF"}
-            </button>
-          </h1>
-
           <div className="head-section">
             <img
               src={backgroundImage}
@@ -105,6 +96,14 @@ const PdfCreator = () => {
             />
             <div className="overlay"></div>
           </div>
+          <h1 className="heading">
+            {merchantName
+              ? "BRD For Merchant : " + merchantName
+              : "No Merchant Name Found"}{" "}
+            <button className="action-button" onClick={handleSaveOrPrint}>
+              {changesMade ? "Save" : "Print PDF"}
+            </button>
+          </h1>
 
           <div className="merchant-data-container">
             {Object.entries(merchantData).map(([key, value]) => (
