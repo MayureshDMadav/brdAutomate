@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
+import backgroundImage from "../imageHeader.png";
 
 const PdfCreator = () => {
   const location = useLocation();
@@ -8,6 +9,9 @@ const PdfCreator = () => {
   const merchantName = searchParams.get("merchantName");
   const [merchantData, setMerchantData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [inputValues, setInputValues] = useState({});
+  const [changesMade, setChangesMade] = useState(false);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -24,6 +28,7 @@ const PdfCreator = () => {
         );
         const data = await response.json();
         setMerchantData(data);
+        setInputValues(data);
       } catch (error) {
         console.error("Error fetching merchant data from FrontEnd");
       } finally {
@@ -35,19 +40,43 @@ const PdfCreator = () => {
   }, [merchantName]);
 
   const handlePrintPDF = () => {
-    window.print();
+    if (validateInputs()) {
+      window.print();
+    }
   };
 
-  const renderMerchantData = () => {
-    if (!merchantData) return;
+  const handleInputChange = (key, value) => {
+    setInputValues((prevValues) => ({
+      ...prevValues,
+      [key]: value,
+    }));
+    setChangesMade(true);
+  };
 
-    return Object.entries(merchantData).map(([key, value]) => (
-      <div key={key} className="merchant-data-item">
-        <span className="key">{key}</span>
-        <span>:</span>
-        <span className="value">{value}</span>
-      </div>
-    ));
+  const handleSaveOrPrint = () => {
+    if (changesMade) {
+      if (validateInputs()) {
+        setMerchantData(inputValues);
+        setSaved(true);
+        setChangesMade(false);
+      }
+    } else {
+      handlePrintPDF();
+    }
+  };
+
+  const validateInputs = () => {
+    const requiredInputs = Object.keys(inputValues).filter(
+      (key) => merchantData[key] !== null
+    );
+
+    for (const key of requiredInputs) {
+      if (!inputValues[key]) {
+        alert(`Please fill in the ${key} field.`);
+        return false;
+      }
+    }
+    return true;
   };
 
   return (
@@ -63,12 +92,50 @@ const PdfCreator = () => {
             {merchantName
               ? "BRD For Merchant : " + merchantName
               : "No Merchant Name Found"}{" "}
-            <button className="action-button" onClick={handlePrintPDF}>
-              Print PDF
+            <button className="action-button" onClick={handleSaveOrPrint}>
+              {changesMade ? "Save" : "Print PDF"}
             </button>
           </h1>
 
-          <div className="merchant-data-container">{renderMerchantData()}</div>
+          <div className="head-section">
+            <img
+              src={backgroundImage}
+              alt="Background"
+              className="background-image"
+            />
+            <div className="overlay"></div>
+          </div>
+
+          <div className="merchant-data-container">
+            {Object.entries(merchantData).map(([key, value]) => (
+              <div
+                key={key}
+                className={`merchant-data-item ${
+                  !value && !inputValues[key] && "highlight-red"
+                }`}
+              >
+                <span
+                  className={`key ${
+                    !value && !inputValues[key] ? "highlight-red" : ""
+                  }`}
+                >
+                  {key}
+                </span>
+                <span>:</span>
+                {saved ? (
+                  <span className="value">{value}</span>
+                ) : (
+                  <input
+                    type="text"
+                    className="value"
+                    value={inputValues[key] || ""}
+                    onChange={(e) => handleInputChange(key, e.target.value)}
+                    required
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </>
       )}
     </div>
