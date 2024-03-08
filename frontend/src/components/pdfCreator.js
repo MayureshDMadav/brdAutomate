@@ -17,7 +17,7 @@ const PdfCreator = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/getDataForMerchant",
+          "https://brdautomate.onrender.com/getDataForMerchant",
           {
             method: "POST",
             headers: {

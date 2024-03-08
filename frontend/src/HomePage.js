@@ -11,7 +11,9 @@ const HomePage = () => {
   useEffect(() => {
     const fetchListOfMerchant = async () => {
       try {
-        let dataOfMerchant = await fetch("http://localhost:3000/merchantName");
+        let dataOfMerchant = await fetch(
+          "https://brdautomate.onrender.com/merchantName"
+        );
         let response = await dataOfMerchant.json();
         let lastMerchantList = await response.reverse();
         setMerchantList(lastMerchantList);
