@@ -12,7 +12,7 @@ const HomePage = () => {
     const fetchListOfMerchant = async () => {
       try {
         let dataOfMerchant = await fetch(
-          "https://brdautomate.onrender.com/merchantName"
+          `${process.env.REACT_APP_MERCHANT_NAME}`
         );
         let response = await dataOfMerchant.json();
         let lastMerchantList = await response.reverse();
